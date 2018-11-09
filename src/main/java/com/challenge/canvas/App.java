@@ -114,20 +114,3 @@ public class App {
 	}
 		
 }
-/*  
-----------------------
-|oooooooooooooxxxxxoo|
-|xxxxxxooooooox   xoo|
-|     xoooooooxxxxxoo|
-|     xoooooooooooooo|
-----------------------
-
-
-----------------------
-|             xxxxx  |
-|xxxxxx       x   x  |
-|     x       xxxxx  |
-|     x              |
-----------------------
-
-*/
