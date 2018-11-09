@@ -25,8 +25,6 @@ public class CanvasTest extends TestCase {
 		canvasCreated.append("|                  |\n");
 		canvasCreated.append("--------------------\n");  		
 		
-//		System.out.println(canvasCreated.toString());
-		
 		assertEquals(canvasCreated.toString(), canvas.drawCanvas(20,4).toString());
 			
 	}
