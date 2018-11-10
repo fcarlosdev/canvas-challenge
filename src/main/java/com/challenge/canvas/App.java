@@ -1,116 +1,108 @@
 package com.challenge.canvas;
 
-/**
- * Hello world!
- *
- */
 public class App {
+
+	private static int width;
+	private static int height;
 	
+	private static String[][] canvas = null;
+		
 	public static void main(String[] args) {
+	  String enteredCommand = "";
+	  Scanner command = new Scanner(System.in);
 		
-		int lines = 6;
-		int columns = 22;
-		
-		String canvas[][] = new String[lines][columns];
+	  while (!enteredCommand.equals("Q")) {
+			
+	    System.out.print("Enter a command: ");
+	    String[] commandParts = command.nextLine().split(" ");
+	    enteredCommand = commandParts[0];
+
+	    if (enteredCommand.equals("C")) {
+			
+	      createCanvas(Integer.parseInt(commandParts[1])+2, Integer.parseInt(commandParts[2])+2);
 				
-		
-		
-		for (int i = 0; i < lines; i++) {			
-			for (int j = 0; j < columns; j++) {
-				if (i == 0 || i == 5) {
-					canvas[i][j] = "-";
-				} else {
-					if (j == 0 || j == (columns-1)) {
-						canvas[i][j] = "|";
-					} else {
-						canvas[i][j] = " ";						
-					}
-				}
-			}
-		}
-		
-		
-		//Draw a horizontal line L 1 2 6 2
-		
-		for (int col = 1; col <= 6; col++) {
-			canvas[2][col] = "x";
-		}
-		
-		
-		//Draw a vertical line L 6 3 6 4
-		
-		int column = 6;
-		int line1 = 3;
-		int line2 = 4;
-		
-		for (int ln = line1; ln < (line2+1); ln++) {
+	      displayCanvas(canvas);
 			
-			for (int m = 0; m < 6; m++) {
-				if (m > 0) {
-					canvas[ln][m] = "nf";					
-				}
-			}
+	    } else if (enteredCommand.equals("L")) {
 			
-			canvas[ln][column] = "x";
-		}
-		
-		//Draw Rectangle R 14 1 18 3		
-		
-		int lnIni = 1;
-		int lnFim = 3;
-		
-		int colIni = 14;
-		int colFim = 18;
-		
-		for (int line = lnIni; line < (lnFim + 1); line++ ) {
-			
-			
-			for (int col = colIni; col <= colFim; col++) {
-				if (line%2 == 0 ) {
-					if (col != colIni && col != colFim) {
-						canvas[line][col] = "nf";						
-					} else {
-						canvas[line][col] = "x";
-					}
-				} else {					
-					canvas[line][col] = "x";
-				}				
-			}
-		}
-		
-		
+	       if (canvas == null) {
+		  System.out.println("No canvas created");
 				
-		//Bucket fill 10 3 o
-		for (int l = 0; l < lines; l++) {
-			
-			for (int c = 0; c < columns; c++) {
+		} else {
 				
-				if (canvas[l][c] == " ") {
-					
-					canvas[l][c] = "o";
-				}
-			}
+		   int x1 = Integer.parseInt(commandParts[1]);
+		   int y1 = Integer.parseInt(commandParts[2]);
+		   int x2 = Integer.parseInt(commandParts[3]);
+		   int y2 = Integer.parseInt(commandParts[4]);
+				
+		   if (x1 != x2 && y1 == y2) {
+		
+		     for (int x = x1; x <= x2; x++) {	
+			canvas[x][y1] = "x";
+		     }
+						
+		   } else if (x1 == x2 && y1 != y2) {
+		       for (int y = y1; y <= y2; y++) {						
+			  canvas[x1][y] = "x";
+		       }
+		   }
+				
+		   displayCanvas(canvas);
+				
 		}
-		
 			
-		
-		//Print canvas
-		
-		for(int line = 0; line < lines; line++) {
+	    } else if (enteredCommand.equals("R")) {
 			
-			for (int col = 0; col < columns; col++) {
-				if (canvas[line][col] == "nf") {
-					System.out.print(" ");
-				} else {
-					
-					System.out.print(canvas[line][col]);
+	    } else if (enteredCommand.equals("B")) {
+			
+	    }  else if (enteredCommand.equals("Q")) {
+	 	 System.out.println("Leaving the program");
+	    }else {				
+		System.out.println("Command invalid!");
+	    }
+			
+	  }
+	  command.close();
+	}
+	
+	private static void createCanvas(int w, int h) {
+
+		width  = w;
+		height = h;
+		
+		canvas = new String[width][height];
+		
+		for (int y = 0; y < height; y++) {
+			
+			for (int x = 0; x < width; x++) {
+				
+				if (y == 0 || y == (height-1)) {
+					canvas[x][y] = "-";	
+				} else if (x != 0 && x != (width-1)) {
+					canvas[x][y] = " ";
+				} else {						
+					canvas[x][y] = "|";
+					canvas[x][y] = "|";
 				}
 			}
-			
+							
+		}
+	}
+
+	private static void displayCanvas(String[][] canvas) {
+		
+		for (int y = 0; y < height; y++) {
+
+			for (int x = 0; x < width; x++) {
+
+				if (canvas[x][y] != null) {
+
+					System.out.print(canvas[x][y]);
+				}
+			}
+
 			System.out.println();
 		}
-		
-		
 	}
-		
+			
 }
