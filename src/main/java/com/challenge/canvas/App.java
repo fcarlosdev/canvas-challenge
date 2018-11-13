@@ -1,16 +1,27 @@
 package com.challenge.canvas;
 
+import java.util.List;
+import java.util.Scanner;
+
+import com.challenge.commands.BucketFillOperation;
+import com.challenge.commands.CommandOperation;
+import com.challenge.commands.DrawCanvasOperation;
+import com.challenge.commands.DrawLineOperation;
+import com.challenge.commands.DrawRectangleOperation;
+import com.challenge.shapes.Canvas;
+import com.challenge.shapes.Point;
+
 public class App {
+	
+	private static Canvas canvas;
 
-	private static int width;
-	private static int height;
-
-	private static String[][] canvas = null;
+	
 
 	public static void main(String[] args) {
 
 		String enteredCommand = "";
 		Scanner command = new Scanner(System.in);
+		CommandExecutor executor = new CommandExecutor();
 
 		while (!enteredCommand.equals("Q")) {
 
@@ -19,29 +30,34 @@ public class App {
 			enteredCommand = commandParts[0];
 
 			if (enteredCommand.equals("C")) {
-				createCanvas(Integer.parseInt(commandParts[1])+2, Integer.parseInt(commandParts[2])+2);
-				displayCanvas(canvas);
+				int width = Integer.parseInt(commandParts[1])+2;
+				int height = Integer.parseInt(commandParts[2])+2;
+				executeCommand(executor, new DrawCanvasOperation(width, height));
 			} else if (enteredCommand.equals("L")) {
 				if (canvas == null) {
 					System.out.println("No canvas created");
-				} else {
-					createLine(commandParts);
-					displayCanvas(canvas);
+				} else {					
+					Point start = new Point(Integer.parseInt(commandParts[1]),Integer.parseInt(commandParts[2]));
+					Point finish = new Point(Integer.parseInt(commandParts[3]),Integer.parseInt(commandParts[4]));
+					executeCommand(executor, new DrawLineOperation(canvas,start, finish));
 				}
 			} else if (enteredCommand.equals("R")) {
 				if (canvas == null) {
 					System.out.println("No canvas created");
 				} else {
-					createRectangle(commandParts);
-					displayCanvas(canvas);
+					Point start = new Point(Integer.parseInt(commandParts[1]),Integer.parseInt(commandParts[2]));
+					Point finish = new Point(Integer.parseInt(commandParts[3]),Integer.parseInt(commandParts[4]));
+					executeCommand(executor, new DrawRectangleOperation(canvas,start, finish));
 				}
 			} else if (enteredCommand.equals("B")) {
 
 				if (canvas == null) {
 					System.out.println("No canvas created");
-				} else {
-					bucketFill(commandParts);
-					displayCanvas(canvas);
+				} else {					
+					Point location = new Point(Integer.parseInt(commandParts[1]), Integer.parseInt(commandParts[2]));
+					String color = commandParts[3];
+					executeCommand(executor, new BucketFillOperation(canvas, location, color));
+					
 				}
 
 			} else if (enteredCommand.equals("Q")) {
@@ -53,173 +69,23 @@ public class App {
 
 		command.close();
 	}
-
-	private static void createCanvas(int w, int h) {
-
-		width  = w;
-		height = h;
-
-		canvas = new String[width][height];
-
-		for (int y = 0; y < height; y++) {
-
-			for (int x = 0; x < width; x++) {
-
-				if (y == 0 || y == (height-1)) {
-					canvas[x][y] = "-";
-				} else if (x != 0 && x != (width-1)) {
-					canvas[x][y] = " ";
-				} else {
-					canvas[x][y] = "|";
-					canvas[x][y] = "|";
-				}
-			}
-
-		}
+	
+	
+	private static void executeCommand(CommandExecutor executor, CommandOperation command) {		
+		canvas = executor.executeOperation(command);
+		displayCanvas(canvas.getDrawingArea());
 	}
 
-	private static void createLine(String[] params) {
+	private static void displayCanvas(String[][] printableArea) {
 
-		int x1 = Integer.parseInt(params[1]);
-		int y1 = Integer.parseInt(params[2]);
-		int x2 = Integer.parseInt(params[3]);
-		int y2 = Integer.parseInt(params[4]);
+		for (int y = 0; y < canvas.getHeight(); y++) {
 
-		if (x1 != x2 && y1 == y2) {
+			for (int x = 0; x < canvas.getWidth(); x++) {
 
-			for (int x = x1; x <= x2; x++) {
-				canvas[x][y1] = "x";
-			}
+				if (printableArea[x][y] != null) {
 
-		} else if (x1 == x2 && y1 != y2) {
-
-			for (int y = y1; y <= y2; y++) {
-				canvas[x1][y] = "x";
-				if ( x1 > 1) {
-					for (int x = x1; x > 0; x--) {
-						canvas[x][y] = "nf";
-					}
-				} else if ( x1 < (width - 1)) {
-					for (int x = x1; x < width; x++) {
-						canvas[x][y] = "nf";
-					}
-				}
-			}
-		}
-	}
-
-	private static void createRectangle(String[] params) {
-
-		int x1 = Integer.parseInt(params[1]);
-		int y1 = Integer.parseInt(params[2]);
-		int x2 = Integer.parseInt(params[3]);
-		int y2 = Integer.parseInt(params[4]);
-
-
-		if (x1 == x2 || y1 == y2) {
-			System.out.println("Enter different points");
-		} else {
-
-			for (int x = x1; x <= x2; x++) {
-
-				for (int y = y1; y <= y2; y++) {
-
-				  if ((x == x1 || x == x2) || (y == y1 || y == y2) ) {
-					  canvas[x][y] = "x";
-				  } else {
-					  canvas[x][y] = "nf";
-				  }
-				}
-			}
-
-		}
-	}
-
-	private static void bucketFill(String[] params) {
-
-		int x1 = Integer.parseInt(params[1]);
-		int y1 = Integer.parseInt(params[2]);
-		String color = params[3];
-
-		canvas[x1][y1] = color;
-
-		for (int x = (x1-1); x > 0; x--) {
-
-			if (emptySpot(x, y1)) {
-			 canvas[x][y1] = color;
-			}
-		}
-
-		for (int x = (x1+1); x < (width - 1); x++) {
-			if (emptySpot(x, y1)) {
-				canvas[x][y1] = color;
-			}
-		}
-
-		for (int y = (y1-1); y > 0; y--) {
-			if (emptySpot(x1, y)) {
-				canvas[x1][y] = color;
-			}
-		}
-
-		for (int y = (y1+1); y < (height -1); y++) {
-			if (emptySpot(x1, y)) {
-				canvas[x1][y] = color;
-			}
-		}
-
-		for (int x = (x1-1); x > 0; x--) {
-
-			for ( int y = (y1-1); y > 0; y--) {
-
-				if (emptySpot(x, y)) {
-					canvas[x][y] = color;
-				}
-			}
-		}
-
-		for (int x = (x1+1); x < (width-1); x++) {
-
-			for ( int y = (y1+1); y < (height - 1); y++) {
-
-				if (emptySpot(x, y)) {
-					canvas[x][y] = color;
-				}
-			}
-		}
-
-		for (int x = (x1+1); x < (width-1); x++) {
-
-			for ( int y = (y1-1); y > 0; y--) {
-
-				if (emptySpot(x, y)) {
-					canvas[x][y] = color;
-				}
-
-			}
-		}
-
-		for (int x = (x1-1); x > 0; x--) {
-
-			for ( int y = (y1+1); y < (height - 1); y++) {
-
-				if (emptySpot(x, y)) {
-					canvas[x][y] = color;
-				}
-			}
-		}
-	}
-
-	private static void displayCanvas(String[][] canvas) {
-
-		for (int y = 0; y < height; y++) {
-
-			for (int x = 0; x < width; x++) {
-
-				if (canvas[x][y] != null) {
-
-					if (canvas[x][y] != "nf") {
-						System.out.print(canvas[x][y]);
+					if (printableArea[x][y] != "nf") {
+						System.out.print(printableArea[x][y]);
 					} else {
 						System.out.print(" ");
 					}
@@ -230,11 +96,4 @@ public class App {
 
 	}
 
-	private static boolean emptySpot(int x, int y) {
-		return insideLimit(x,y) && (canvas[x][y] == " ");
-	}
-
-	private static boolean insideLimit(int x, int y) {
-		return (( x > 0 && x < width) && ( y > 0 && y < height));
-	}
 }
