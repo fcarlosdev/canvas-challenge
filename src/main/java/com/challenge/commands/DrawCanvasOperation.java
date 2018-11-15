@@ -11,7 +11,7 @@ public class DrawCanvasOperation implements CommandOperation {
 	}
 	
 	@Override
-	public Canvas execute() {			
+	public Canvas execute() {
 		return drawingArea.createCanvas();
 	}
 
