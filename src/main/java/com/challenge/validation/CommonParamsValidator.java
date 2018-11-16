@@ -34,8 +34,5 @@ public abstract class CommonParamsValidator implements ParametersValidator {
         this.numberOfParams = numberOfParams;
     }
 
-    public void setNumberValidator(NumberValidator numberValidator) {
-        this.numberValidator = numberValidator;
-    }
 
 }
