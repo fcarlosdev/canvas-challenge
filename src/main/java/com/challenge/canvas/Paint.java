@@ -22,7 +22,7 @@ public class Paint {
 
         final CommandFactory cf = CommandFactory.init();
         final ShapeFactories df = new ShapeFactory();
-        final ToolFactories tf  = new TooBucketFillFactory();
+        final ToolFactories tf  = new ToolBucketFillFactory();
 
         Scanner readCommand = new Scanner(System.in);
 
