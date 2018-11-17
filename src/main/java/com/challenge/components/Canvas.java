@@ -1,4 +1,4 @@
-package com.challenge.shapes;
+package com.challenge.components;
 
 public class Canvas {
 
@@ -8,9 +8,9 @@ public class Canvas {
 
 	public Canvas(int width, int height) {
 
-		this.width = width;
-		this.height = height;
-		drawingArea = new String[width][height];
+		this.width = (width + 2);
+		this.height = (height + 2);
+		drawingArea = new String[this.width][this.height];
 	}
 
 	public int getWidth() {
@@ -46,6 +46,26 @@ public class Canvas {
 		}
 				
 		return this;
+	}
+
+	public void drawCanvas() {
+
+		for (int y = 0; y < height; y++) {
+
+			for (int x = 0; x < width; x++) {
+
+				if (drawingArea[x][y] != null) {
+
+					if (drawingArea[x][y] != "nf") {
+						System.out.print(drawingArea[x][y]);
+					} else {
+						System.out.print(" ");
+					}
+				}
+			}
+			System.out.println();
+		}
+
 	}
 
 }

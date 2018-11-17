@@ -1,4 +1,4 @@
-package com.challenge.shapes;
+package com.challenge.components;
 
 public class Point {
 
